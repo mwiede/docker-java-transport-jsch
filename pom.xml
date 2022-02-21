@@ -8,15 +8,29 @@
     <groupId>com.github.mwiede.dockerjava</groupId>
     <artifactId>docker-java-transport-jsch</artifactId>
     <version>1.0-SNAPHSOT</version>
+
+    <name>docker-java-transport-jsch</name>
+    <description>A library to use docker-java api via ssh protocol</description>
+    <url>https://github.com/mwiede/docker-java-transport-jsch</url>
+
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <dockerjava.version>0-SNAPSHOT</dockerjava.version>
+        <dockerjava.version>3.2.13</dockerjava.version>
 
         <!-- testing -->
+        <dockerjava.version.testing>0-SNAPSHOT</dockerjava.version.testing>
         <maven-failsafe-plugin.version>3.0.0-M4</maven-failsafe-plugin.version>
-        <logback.version>1.2.3</logback.version>
+        <logback.version>1.2.10</logback.version>
     </properties>
+
+    <developers>
+        <developer>
+            <id>mwiede</id>
+            <name>Matthias Wiedemann</name>
+            <email>mwiede@gmx.de</email>
+        </developer>
+    </developers>
 
     <dependencies>
         <dependency>
@@ -54,7 +68,7 @@
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
-            <version>4.0.1</version>
+            <version>4.1.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -66,7 +80,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>3.3.0</version>
+            <version>4.3.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -105,20 +119,6 @@
             <version>5.8.2</version>
             <scope>test</scope>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>5.8.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-runner</artifactId>
-            <version>1.8.2</version>
-            <scope>test</scope>
-        </dependency>-->
-
     </dependencies>
 
     <build>
@@ -182,7 +182,7 @@
                     </execution>
                     -->
                     <execution>
-                        <id>unpack</id>
+                        <id>unpack-tests</id>
                         <phase>generate-test-sources</phase>
                         <goals>
                             <goal>unpack</goal>
@@ -192,7 +192,7 @@
                                 <artifactItem>
                                     <groupId>com.github.docker-java</groupId>
                                     <artifactId>docker-java</artifactId>
-                                    <version>${dockerjava.version}</version>
+                                    <version>${dockerjava.version.testing}</version>
                                     <classifier>tests</classifier>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
@@ -204,7 +204,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>unpack-ide</id>
+                        <id>unpack-classes</id>
                         <phase>generate-test-sources</phase>
                         <goals>
                             <goal>unpack</goal>
@@ -214,7 +214,7 @@
                                 <artifactItem>
                                     <groupId>com.github.docker-java</groupId>
                                     <artifactId>docker-java</artifactId>
-                                    <version>${dockerjava.version}</version>
+                                    <version>${dockerjava.version.testing}</version>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
                                 </artifactItem>
@@ -255,12 +255,12 @@
                         </goals>
                     </execution>
                 </executions>
-<!--
-                <configuration>
-                    <trimStackTrace>false</trimStackTrace>
-                    <rerunFailingTestsCount>2</rerunFailingTestsCount>
-                </configuration>
--->
+                <!--
+                                <configuration>
+                                    <trimStackTrace>false</trimStackTrace>
+                                    <rerunFailingTestsCount>2</rerunFailingTestsCount>
+                                </configuration>
+                -->
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -276,6 +276,17 @@
                 <version>3.0.0-M4</version>
                 <configuration>
                     <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.8</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
         </plugins>
@@ -299,4 +310,87 @@
         </plugins>
     </reporting>
 
+    <licenses>
+        <license>
+            <name>Apache License 2.0</name>
+            <url>https://github.com/mwiede/docker-java-transport-jsch/blob/main/LICENSE</url>
+        </license>
+    </licenses>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/mwiede/docker-java-transport-jsch/issues</url>
+    </issueManagement>
+
+    <ciManagement>
+        <system>GitHub</system>
+        <url>https://github.com/mwiede/docker-java-transport-jsch/actions</url>
+    </ciManagement>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.2.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.3.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+    <scm>
+        <connection>scm:git:https://github.com/mwiede/docker-java-transport-jsch.git</connection>
+        <developerConnection>scm:git:https://github.com/mwiede/docker-java-transport-jsch.git</developerConnection>
+        <url>https://github.com/mwiede/docker-java-transport-jsch</url>
+        <tag>HEAD</tag>
+    </scm>
 </project>
