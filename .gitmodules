@@ -1,0 +1,4 @@
+[submodule "docker-java"]
+	path = docker-java
+	url = https://github.com/mwiede/docker-java.git
+	branch = testing_resources
