@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.experimental.categories.Category;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -138,12 +139,13 @@ public abstract class SwarmCmdIT extends CmdIT {
 
         if (!dockerRule.getConfig().getDockerHost().getScheme().equals(config.getDockerHost().getScheme())) {
 
-            JschDockerHttpClient dockerHttpClient = null;
             try {
-                dockerHttpClient = new JschDockerHttpClient.Builder()
+                JschDockerHttpClient dockerHttpClient = new JschDockerHttpClient.Builder()
                         .sslConfig(config.getSSLConfig())
                         .dockerHost(dockerRule.getConfig().getDockerHost()) // take ssh
                         .useTcp(config.getDockerHost().getPort()) // and the tcp port to connect to
+                        .connectTimeout(Duration.ofSeconds(5))
+                        .readTimeout(Duration.ofSeconds(5))
                         .build();
 
                 return DockerClientBuilder.getInstance(dockerRule.getConfig())

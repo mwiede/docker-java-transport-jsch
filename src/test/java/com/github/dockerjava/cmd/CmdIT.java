@@ -13,6 +13,7 @@ import org.junit.Rule;
 import org.junit.experimental.categories.Category;
 
 import java.io.IOException;
+import java.time.Duration;
 
 /**
  * @author Kanstantsin Shautsou
@@ -26,8 +27,8 @@ public abstract class CmdIT {
         if ("ssh".equalsIgnoreCase(config.getDockerHost().getScheme())) {
 
             final JschDockerHttpClient.Builder builder = new JschDockerHttpClient.Builder()
-                    .connectTimeout(20000)
-                    .readTimeout(20000)
+                    .connectTimeout(Duration.ofSeconds(20))
+                    .readTimeout(Duration.ofSeconds(20))
                     .sslConfig(config.getSSLConfig())
                     .dockerHost(config.getDockerHost())
                     .useSocket()
