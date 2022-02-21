@@ -17,5 +17,5 @@ EOT
 chmod go-w $HOME $HOME/.ssh
 chmod 600 $HOME/.ssh/authorized_keys
 
-ssh -o StrictHostKeyChecking=accept-new -q localhost exit
+ssh -o StrictHostKeyChecking=accept-new -q junit-host exit
 
