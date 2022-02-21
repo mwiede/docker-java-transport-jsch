@@ -44,7 +44,7 @@ jobs:
       - name: Create test reports
         if: always()
         continue-on-error: true
-        run: mvn -B mvn surefire-report:failsafe-report-only
+        run: mvn -B surefire-report:failsafe-report-only
       - uses: actions/upload-artifact@v2
         if: always()
         with:
