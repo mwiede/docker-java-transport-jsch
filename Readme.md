@@ -1,5 +1,6 @@
 # docker-java-transport-jsch
 
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.mwiede.dockerjava/docker-java-transport-jsch)](https://maven-badges.herokuapp.com/maven-central/com.github.mwiede.dockerjava/docker-java-transport-jsch)
 [![Java CI with Maven](https://github.com/mwiede/docker-java-transport-jsch/actions/workflows/maven.yml/badge.svg)](https://github.com/mwiede/docker-java-transport-jsch/actions/workflows/maven.yml)
 
 ## background

@@ -255,12 +255,10 @@
                         </goals>
                     </execution>
                 </executions>
-                <!--
-                                <configuration>
-                                    <trimStackTrace>false</trimStackTrace>
-                                    <rerunFailingTestsCount>2</rerunFailingTestsCount>
-                                </configuration>
-                -->
+                <configuration>
+                    <trimStackTrace>false</trimStackTrace>
+                    <rerunFailingTestsCount>2</rerunFailingTestsCount>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
