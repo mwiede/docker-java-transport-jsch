@@ -1,6 +1,7 @@
 package com.github.mwiede.dockerjava.jsch;
 
 import com.jcraft.jsch.Session;
+import com.jcraft.jsch.UserInfo;
 import okhttp3.Interceptor;
 
 import java.io.File;
@@ -20,6 +21,7 @@ class JschDockerConfig {
     private Integer tcpPort;
     private Hashtable jschConfig;
     private String socatFlags;
+    private UserInfo userInfo;
 
     public Integer getTcpPort() {
         return tcpPort;
@@ -99,5 +101,13 @@ class JschDockerConfig {
 
     public void setSocatFlags(String socatFlags) {
         this.socatFlags = socatFlags;
+    }
+
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
+    }
+
+    public UserInfo getUserInfo() {
+        return userInfo;
     }
 }
