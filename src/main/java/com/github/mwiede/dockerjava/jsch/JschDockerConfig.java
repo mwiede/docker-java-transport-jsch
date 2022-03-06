@@ -1,5 +1,6 @@
 package com.github.mwiede.dockerjava.jsch;
 
+import com.jcraft.jsch.IdentityRepository;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.UserInfo;
 import okhttp3.Interceptor;
@@ -22,6 +23,7 @@ class JschDockerConfig {
     private Hashtable jschConfig;
     private String socatFlags;
     private UserInfo userInfo;
+    private IdentityRepository identityRepository;
 
     public Integer getTcpPort() {
         return tcpPort;
@@ -109,5 +111,13 @@ class JschDockerConfig {
 
     public UserInfo getUserInfo() {
         return userInfo;
+    }
+
+    public void setIdentityRepository(IdentityRepository identityRepository) {
+        this.identityRepository = identityRepository;
+    }
+
+    public IdentityRepository getIdentityRepository() {
+        return identityRepository;
     }
 }

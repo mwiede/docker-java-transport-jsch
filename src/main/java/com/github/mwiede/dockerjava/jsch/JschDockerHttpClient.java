@@ -168,6 +168,11 @@ public final class JschDockerHttpClient implements DockerHttpClient {
             return this;
         }
 
+        public Builder identityRepository(IdentityRepository identityRepository) {
+            this.jschDockerConfig.setIdentityRepository(identityRepository);
+            return this;
+        }
+
         public JschDockerHttpClient build() throws IOException, JSchException {
             Objects.requireNonNull(dockerHost, "dockerHost not provided");
             return new JschDockerHttpClient(
@@ -424,8 +429,9 @@ public final class JschDockerHttpClient implements DockerHttpClient {
 
         if (jschDockerConfig.getIdentityFile() != null) {
             jSch.addIdentity(jschDockerConfig.getIdentityFile().getAbsolutePath());
+        } else if (jschDockerConfig.getIdentityRepository() != null) {
+            jSch.setIdentityRepository(jschDockerConfig.getIdentityRepository());
         }
-
 
         newSession.setUserInfo(jschDockerConfig.getUserInfo());
 
