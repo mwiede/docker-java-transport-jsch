@@ -16,7 +16,7 @@ While native docker cli supports ssh connections since Host docker version 18.09
 options it is possible to make it work for older versions. This library opens the ssh connection and then forwards the
 docker daemon socket to make it available to the http client.
 
-The ssh connection configuration relies on basic [ssh config file](https://www.ssh.com/ssh/config/) in ~/.ssh/config.
+The default ssh connection configuration relies on basic [ssh config file](https://www.ssh.com/ssh/config/) in ~/.ssh/config.
 
 ## usage
 
@@ -38,7 +38,7 @@ try(final JschDockerHttpClient httpClient=new JschDockerHttpClient.Builder()
         }
 ```
 
-### connection variants:
+### connection variants
 
 By setting flags in the builder, one can control how the connection is made.
 
@@ -47,6 +47,41 @@ By setting flags in the builder, one can control how the connection is made.
 * direct-tcpip `.useTcp()` or `.useTcp(8765)`
 * socat `.useSocat()` or `.useSocat("/my/path/to/docker.socket")`
 
+### authentication variants
+
+The SSH authentication relies on the `Jsch` mechanisms.
+
+Configuration-guidance:
+
+- Password:
+  ```java
+   JschDockerHttpClient.Builder()
+  ...
+  .userInfo(new com.jcraft.jsch.UserInfo(){
+  ...
+  })
+  .build();
+  ```
+- SSH-Agent:
+  
+  - *nix:
+    - use java 16 and above or add [junixsocket](https://github.com/kohlschutter/junixsocket) to the classpath
+    ````java
+    IdentityRepository identityRepository = new AgentIdentityRepository(new SSHAgentConnector());
+    new JschDockerHttpClient.Builder()
+    ...
+    .identityRepository(identityRepository)
+    .build();
+    ````
+  - Windows with Pageant:
+    - add dependency: put [jna-platform](https://mvnrepository.com/artifact/net.java.dev.jna/jna-platform) into the classpath
+    ````java
+    IdentityRepository identityRepository = new AgentIdentityRepository(new PageantConnector());
+    new JschDockerHttpClient.Builder()
+    ...
+    .identityRepository(identityRepository)
+    .build();
+    ````
 ## testing
 
 reuse of integrations-tests from [a docker-java](https://github.com/docker-java/docker-java) by applying patches.
