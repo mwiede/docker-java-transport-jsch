@@ -21,7 +21,7 @@
         <!-- testing -->
         <dockerjava.version.testing>0-SNAPSHOT</dockerjava.version.testing>
         <maven-failsafe-plugin.version>3.0.0-M4</maven-failsafe-plugin.version>
-        <logback.version>1.2.10</logback.version>
+        <logback.version>1.2.11</logback.version>
     </properties>
 
     <developers>
