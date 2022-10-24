@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.mwiede.dockerjava</groupId>
     <artifactId>docker-java-transport-jsch</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.2</version>
 
     <name>docker-java-transport-jsch</name>
     <description>A library to use docker-java api via ssh protocol</description>
@@ -142,7 +140,7 @@
                         <id>enforce</id>
                         <configuration>
                             <rules>
-                                <dependencyConvergence/>
+                                <dependencyConvergence />
                             </rules>
                         </configuration>
                         <goals>
@@ -389,6 +387,6 @@
         <connection>scm:git:git@github.com:mwiede/docker-java-transport-jsch.git</connection>
         <developerConnection>scm:git:git@github.com:mwiede/docker-java-transport-jsch.git</developerConnection>
         <url>https://github.com/mwiede/docker-java-transport-jsch</url>
-        <tag>HEAD</tag>
+        <tag>docker-java-transport-jsch-1.2</tag>
     </scm>
 </project>
