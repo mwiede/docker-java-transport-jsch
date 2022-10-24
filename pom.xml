@@ -386,8 +386,8 @@
         </profile>
     </profiles>
     <scm>
-        <connection>scm:git:https://github.com/mwiede/docker-java-transport-jsch.git</connection>
-        <developerConnection>scm:git:https://github.com/mwiede/docker-java-transport-jsch.git</developerConnection>
+        <connection>scm:git:git@github.com:mwiede/docker-java-transport-jsch.git</connection>
+        <developerConnection>scm:git:git@github.com:mwiede/docker-java-transport-jsch.git</developerConnection>
         <url>https://github.com/mwiede/docker-java-transport-jsch</url>
         <tag>HEAD</tag>
     </scm>
