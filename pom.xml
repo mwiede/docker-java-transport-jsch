@@ -19,7 +19,7 @@
         <!-- testing -->
         <dockerjava.version.testing>0-SNAPSHOT</dockerjava.version.testing>
         <maven-failsafe-plugin.version>3.0.0-M7</maven-failsafe-plugin.version>
-        <logback.version>1.4.4</logback.version>
+        <logback.version>1.4.5</logback.version>
     </properties>
 
     <developers>
