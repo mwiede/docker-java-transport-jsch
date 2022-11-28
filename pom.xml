@@ -14,7 +14,7 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <dockerjava.version>3.2.13</dockerjava.version>
+        <dockerjava.version>3.2.14</dockerjava.version>
 
         <!-- testing -->
         <dockerjava.version.testing>0-SNAPSHOT</dockerjava.version.testing>
