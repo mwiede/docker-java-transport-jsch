@@ -14,10 +14,9 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <dockerjava.version>3.3.0</dockerjava.version>
+        <dockerjava.version>3.3.1</dockerjava.version>
 
         <!-- testing -->
-        <dockerjava.version.testing>0-SNAPSHOT</dockerjava.version.testing>
         <maven-failsafe-plugin.version>3.0.0</maven-failsafe-plugin.version>
         <logback.version>1.4.5</logback.version>
     </properties>
@@ -124,7 +123,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.1</version>
+                <version>3.11.0</version>
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
@@ -154,7 +153,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.5.0</version>
+                <version>3.6.0</version>
                 <executions>
                     <!--
                     <execution>
@@ -190,7 +189,7 @@
                                 <artifactItem>
                                     <groupId>com.github.docker-java</groupId>
                                     <artifactId>docker-java</artifactId>
-                                    <version>${dockerjava.version.testing}</version>
+                                    <version>${dockerjava.version}</version>
                                     <classifier>tests</classifier>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
@@ -212,7 +211,7 @@
                                 <artifactItem>
                                     <groupId>com.github.docker-java</groupId>
                                     <artifactId>docker-java</artifactId>
-                                    <version>${dockerjava.version.testing}</version>
+                                    <version>${dockerjava.version}</version>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
                                 </artifactItem>
@@ -225,7 +224,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.3.0</version>
+                <version>3.4.0</version>
                 <executions>
                     <execution>
                         <id>add-test-source</id>
@@ -261,7 +260,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.3.0</version>
+                <version>3.3.1</version>
                 <configuration>
                     <overwrite>true</overwrite>
                 </configuration>

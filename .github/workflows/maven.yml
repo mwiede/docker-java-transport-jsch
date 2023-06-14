@@ -29,8 +29,6 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           cache: maven
-      - name: Build docker-java 0-SNAPSHOT with Maven
-        run: mvn -B install --file docker-java/pom.xml -DskipTests
       - name: Configure Docker
         env:
           DOCKER_VERSION: ${{matrix.dockerVersion}}
