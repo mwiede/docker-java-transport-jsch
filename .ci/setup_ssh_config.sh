@@ -12,7 +12,6 @@ Host junit-host
 	HostName localhost
 	IdentityFile ~/.ssh/jsch
 	PreferredAuthentications publickey
-	Port 2222
 EOT
 
 chmod go-w $HOME $HOME/.ssh
