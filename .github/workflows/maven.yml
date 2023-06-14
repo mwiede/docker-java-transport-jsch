@@ -19,7 +19,6 @@ jobs:
       matrix:
         include:
           - { name: "ssh-default" }
-          - { name: "ssh-19.03.9" , dockerVersion: "5:19.03.12~3-0~ubuntu-bionic" }
     steps:
       - uses: actions/checkout@v2
         with:
