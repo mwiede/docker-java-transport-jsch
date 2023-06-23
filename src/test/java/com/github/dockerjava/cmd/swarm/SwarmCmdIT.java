@@ -6,6 +6,7 @@ import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.exception.ConflictException;
 import com.github.dockerjava.api.exception.NotFoundException;
+import com.github.dockerjava.utils.LogContainerTestCallback;
 import com.github.dockerjava.api.model.*;
 import com.github.dockerjava.cmd.CmdIT;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
@@ -19,7 +20,8 @@ import org.junit.After;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.experimental.categories.Category;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.HashSet;
@@ -33,10 +35,10 @@ import static com.github.dockerjava.junit.DockerMatchers.isGreaterOrEqual;
 
 @Category({SwarmModeIntegration.class, Integration.class})
 public abstract class SwarmCmdIT extends CmdIT {
-
+    private static final Logger LOG = LoggerFactory.getLogger(SwarmCmdIT.class);
     private static final String DOCKER_IN_DOCKER_IMAGE_REPOSITORY = "docker";
 
-    private static final String DOCKER_IN_DOCKER_IMAGE_TAG = "17.12-dind";
+    private static final String DOCKER_IN_DOCKER_IMAGE_TAG = "24.0.2-dind-rootless";
 
     private static final String DOCKER_IN_DOCKER_CONTAINER_PREFIX = "docker";
 
@@ -110,8 +112,10 @@ public abstract class SwarmCmdIT extends CmdIT {
                         .withPortBindings(new PortBinding(
                                 Ports.Binding.bindIp("127.0.0.1"),
                                 exposedPort))
-                        .withPrivileged(true))
+                        .withPrivileged(true)
+                        )
                 .withAliases(DOCKER_IN_DOCKER_CONTAINER_PREFIX + numberOfDockersInDocker.incrementAndGet())
+                .withEnv("DOCKER_TLS_CERTDIR","/foobar") // a trick to start without TLS (certs do not exist, but startup is slowed down)
                 .exec();
 
         String containerId = response.getId();
@@ -123,13 +127,22 @@ public abstract class SwarmCmdIT extends CmdIT {
 
         Ports.Binding binding = inspectContainerResponse.getNetworkSettings().getPorts().getBindings().get(exposedPort)[0];
 
-        DockerClient dockerClient = initializeDockerClient(binding);
+        DockerClient dockerClient = initializeDockerClient(binding); 
+
+        logDindContainerOutput(hostDockerClient, containerId);
 
         Awaitility.await().atMost(20, TimeUnit.SECONDS).untilAsserted(() -> {
             dockerClient.pingCmd().exec();
         });
 
         return dockerClient;
+    }
+
+    private void logDindContainerOutput(DockerClient hostDockerClient, String containerId) throws java.lang.InterruptedException{
+        LogContainerTestCallback loggingCallback = new LogContainerTestCallback(true);
+        hostDockerClient.logContainerCmd(containerId).withStdErr(true).withStdOut(true).withFollowStream(true).withTailAll().exec(loggingCallback);
+        loggingCallback.awaitCompletion(20L, TimeUnit.SECONDS);
+        LOG.debug(loggingCallback.toString());
     }
 
     private DockerClient initializeDockerClient(Ports.Binding binding) {
@@ -142,8 +155,8 @@ public abstract class SwarmCmdIT extends CmdIT {
             try {
                 JschDockerHttpClient dockerHttpClient = new JschDockerHttpClient.Builder()
                         .sslConfig(config.getSSLConfig())
-                        .dockerHost(dockerRule.getConfig().getDockerHost()) // take ssh
-                        .useTcp(config.getDockerHost().getPort()) // and the tcp port to connect to
+                        .dockerHost(dockerRule.getConfig().getDockerHost()) // connect via ssh to host
+                        .useTcp(config.getDockerHost().getPort()) // and then use the tcp port to connect to dind container
                         .connectTimeout(Duration.ofSeconds(5))
                         .readTimeout(Duration.ofSeconds(5))
                         .build();
