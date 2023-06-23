@@ -129,9 +129,11 @@ public abstract class SwarmCmdIT extends CmdIT {
 
         DockerClient dockerClient = initializeDockerClient(binding); 
 
-        logDindContainerOutput(hostDockerClient, containerId);
+        //logDindContainerOutput(hostDockerClient, containerId);
 
-        Awaitility.await().atMost(20, TimeUnit.SECONDS).untilAsserted(() -> {
+        Awaitility.given().ignoreExceptions().await()
+        .pollInterval(1, TimeUnit.SECONDS)
+        .atMost(30, TimeUnit.SECONDS).untilAsserted(() -> {
             dockerClient.pingCmd().exec();
         });
 
@@ -157,8 +159,8 @@ public abstract class SwarmCmdIT extends CmdIT {
                         .sslConfig(config.getSSLConfig())
                         .dockerHost(dockerRule.getConfig().getDockerHost()) // connect via ssh to host
                         .useTcp(config.getDockerHost().getPort()) // and then use the tcp port to connect to dind container
-                        .connectTimeout(Duration.ofSeconds(5))
-                        .readTimeout(Duration.ofSeconds(5))
+                        .connectTimeout(Duration.ofSeconds(15))
+                        .readTimeout(Duration.ofSeconds(15))
                         .build();
 
                 return DockerClientBuilder.getInstance(dockerRule.getConfig())
