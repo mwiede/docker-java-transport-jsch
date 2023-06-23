@@ -86,6 +86,13 @@ Configuration-guidance:
 
 reuse of integrations-tests from [a docker-java](https://github.com/docker-java/docker-java) by applying patches.
 
+Always make sure, that you have set up a Docker Host available via ssh and that the host is set in `DOCKER_HOST`
+environment variable and that the ssh config to this host is setup in `~/ssh/config`. (compare to what is done in CI environment
+in [setup_ssh_config.sh](.ci/setup_ssh_config.sh)). 
+
+For example in Github Codespaces as of 06/2023, the ssh port is 2222, not 22.
+
+
 ## dockerd configurations
 
 On the remote host, one can connect to the docker daemon in several ways:
