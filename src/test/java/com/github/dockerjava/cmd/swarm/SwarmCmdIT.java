@@ -115,7 +115,9 @@ public abstract class SwarmCmdIT extends CmdIT {
                         .withPrivileged(true)
                         )
                 .withAliases(DOCKER_IN_DOCKER_CONTAINER_PREFIX + numberOfDockersInDocker.incrementAndGet())
-                .withEnv("DOCKER_TLS_CERTDIR","/foobar") // a trick to start without TLS (certs do not exist, but startup is slowed down)
+                .withEnv("DOCKER_TLS_CERTDIR", // a trick to start without TLS (certs do not exist, but startup is slowed down)
+                "DOCKERD_ROOTLESS_ROOTLESSKIT_FLAGS=-p 0.0.0.0:2377:2377/tcp") // needed in rootless dind
+            .withEntrypoint("dockerd-entrypoint.sh","--tls=false")
                 .exec();
 
         String containerId = response.getId();
