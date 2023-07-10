@@ -261,6 +261,7 @@
                 <configuration>
                     <trimStackTrace>false</trimStackTrace>
                     <rerunFailingTestsCount>2</rerunFailingTestsCount>
+                    <excludesFile>excludedTests.txt</excludesFile>
                 </configuration>
             </plugin>
             <plugin>
@@ -340,6 +341,20 @@
     </ciManagement>
 
     <profiles>
+        <profile>
+            <id>localtesting</id>
+            
+            <dependencies>
+                <dependency>
+                    <groupId>com.github.docker-java</groupId>
+                    <artifactId>docker-java</artifactId>
+                    <version>${dockerjava.version}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            
+        </profile>
+
         <profile>
             <id>release</id>
             <build>

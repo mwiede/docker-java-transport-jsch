@@ -1,0 +1,2 @@
+com.github.dockerjava.cmd.CreateContainerCmdIT#createContainerWithMemorySwappiness
+com.github.dockerjava.cmd.swarm.JoinSwarmCmdExecIT#joinSwarmAsManager
