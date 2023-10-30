@@ -14,7 +14,7 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <dockerjava.version>3.3.2</dockerjava.version>
+        <dockerjava.version>3.3.4</dockerjava.version>
 
         <!-- testing -->
         <maven-failsafe-plugin.version>3.1.2</maven-failsafe-plugin.version>
