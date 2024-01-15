@@ -17,7 +17,7 @@
         <dockerjava.version>3.3.4</dockerjava.version>
 
         <!-- testing -->
-        <maven-failsafe-plugin.version>3.2.3</maven-failsafe-plugin.version>
+        <maven-failsafe-plugin.version>3.2.5</maven-failsafe-plugin.version>
         <logback.version>1.4.14</logback.version>
         <junit.version>5.10.1</junit.version>
     </properties>
