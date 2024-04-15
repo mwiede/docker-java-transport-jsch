@@ -18,7 +18,7 @@
 
         <!-- testing -->
         <maven-failsafe-plugin.version>3.2.5</maven-failsafe-plugin.version>
-        <logback.version>1.5.3</logback.version>
+        <logback.version>1.5.5</logback.version>
         <junit.version>5.10.2</junit.version>
     </properties>
 
