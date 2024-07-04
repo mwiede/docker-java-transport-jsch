@@ -92,6 +92,7 @@ in [setup_ssh_config.sh](.ci/setup_ssh_config.sh)).
 
 For example in Github Codespaces as of 06/2023, the ssh port is 2222, not 22.
 
+example maven command: `DOCKER_HOST=ssh://junit-host mvn verify -Dit.test=JschDockerHttpClientIT`
 
 ## dockerd configurations
 

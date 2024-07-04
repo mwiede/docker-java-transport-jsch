@@ -66,7 +66,8 @@ public final class JschDockerHttpClient implements DockerHttpClient {
         }
 
         /**
-         * use socket and overwrite default socket path {@link JschDockerConfig#VAR_RUN_DOCKER_SOCK}
+         * use socket and overwrite default socket path
+         * {@link JschDockerConfig#VAR_RUN_DOCKER_SOCK}
          *
          * @param socketPath
          * @return
@@ -106,7 +107,8 @@ public final class JschDockerHttpClient implements DockerHttpClient {
          * @return
          */
         public Builder identity(String privateKey) {
-            return identityFile(new File(System.getProperty("user.home") + File.separator + ".ssh" + File.separator + privateKey));
+            return identityFile(
+                    new File(System.getProperty("user.home") + File.separator + ".ssh" + File.separator + privateKey));
         }
 
         /**
@@ -175,13 +177,8 @@ public final class JschDockerHttpClient implements DockerHttpClient {
 
         public JschDockerHttpClient build() throws IOException, JSchException {
             Objects.requireNonNull(dockerHost, "dockerHost not provided");
-            return new JschDockerHttpClient(
-                    dockerHost,
-                    sslConfig,
-                    readTimeout,
-                    connectTimeout,
-                    retryOnConnectionFailure,
-                    jschDockerConfig);
+            return new JschDockerHttpClient(dockerHost, sslConfig, readTimeout, connectTimeout,
+                    retryOnConnectionFailure, jschDockerConfig);
         }
     }
 
@@ -196,17 +193,11 @@ public final class JschDockerHttpClient implements DockerHttpClient {
     private Session session;
     private boolean externalSession = false;
 
-    private JschDockerHttpClient(
-            URI dockerHostUri,
-            SSLConfig sslConfig,
-            Duration readTimeout,
-            Duration connectTimeout,
-            Boolean retryOnConnectionFailure,
-            JschDockerConfig jschDockerConfig) throws IOException, JSchException {
+    private JschDockerHttpClient(URI dockerHostUri, SSLConfig sslConfig, Duration readTimeout, Duration connectTimeout,
+            Boolean retryOnConnectionFailure, JschDockerConfig jschDockerConfig) throws IOException, JSchException {
 
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
-                .addNetworkInterceptor(new HijackingInterceptor())
-                .readTimeout(0, TimeUnit.MILLISECONDS)
+                .addNetworkInterceptor(new HijackingInterceptor()).readTimeout(0, TimeUnit.MILLISECONDS)
                 .retryOnConnectionFailure(true);
 
         if (jschDockerConfig.getInterceptor() != null) {
@@ -230,23 +221,23 @@ public final class JschDockerHttpClient implements DockerHttpClient {
 
         if ("ssh".equals(dockerHostUri.getScheme())) {
 
-            this.session = connectSSH(dockerHostUri, connectTimeout != null ? (int) connectTimeout.toMillis() : 0, jschDockerConfig);
+            this.session = connectSSH(dockerHostUri, connectTimeout != null ? (int) connectTimeout.toMillis() : 0,
+                    jschDockerConfig);
 
             final JSchSocketFactory socketFactory = new JSchSocketFactory(session, jschDockerConfig);
 
             clientBuilder.socketFactory(socketFactory);
 
-            clientBuilder
-                    .connectionPool(new ConnectionPool(0, 1, TimeUnit.SECONDS))
-                    .dns(hostname -> {
-                        if (hostname.endsWith(SOCKET_SUFFIX)) {
-                            return Collections.singletonList(InetAddress.getByAddress(hostname, new byte[]{0, 0, 0, 0}));
-                        } else {
-                            return Dns.SYSTEM.lookup(hostname);
-                        }
-                    });
+            clientBuilder.connectionPool(new ConnectionPool(0, 1, TimeUnit.SECONDS)).dns(hostname -> {
+                if (hostname.endsWith(SOCKET_SUFFIX)) {
+                    return Collections.singletonList(InetAddress.getByAddress(hostname, new byte[] { 0, 0, 0, 0 }));
+                } else {
+                    return Dns.SYSTEM.lookup(hostname);
+                }
+            });
         } else {
-            throw new IllegalArgumentException("Wrong docker host uri (" + dockerHostUri + "). This implementation only supports ssh connection scheme.");
+            throw new IllegalArgumentException("Wrong docker host uri (" + dockerHostUri
+                    + "). This implementation only supports ssh connection scheme.");
         }
 
         if (sslConfig != null) {
@@ -296,10 +287,8 @@ public final class JschDockerHttpClient implements DockerHttpClient {
         if (url.endsWith("/") && request.path().startsWith("/")) {
             url = url.substring(0, url.length() - 1);
         }
-        okhttp3.Request.Builder requestBuilder = new okhttp3.Request.Builder()
-                .url(url + request.path())
-                .tag(Request.class, request)
-                .method(request.method(), toRequestBody(request));
+        okhttp3.Request.Builder requestBuilder = new okhttp3.Request.Builder().url(url + request.path())
+                .tag(Request.class, request).method(request.method(), toRequestBody(request));
 
         request.headers().forEach(requestBuilder::header);
 
@@ -325,7 +314,7 @@ public final class JschDockerHttpClient implements DockerHttpClient {
         try {
             disconnectSSH();
         } finally {
-            for (OkHttpClient clientToClose : new OkHttpClient[]{client, streamingClient}) {
+            for (OkHttpClient clientToClose : new OkHttpClient[] { client, streamingClient }) {
                 clientToClose.dispatcher().cancelAll();
                 clientToClose.dispatcher().executorService().shutdown();
                 clientToClose.connectionPool().evictAll();
@@ -415,7 +404,8 @@ public final class JschDockerHttpClient implements DockerHttpClient {
             jSch.setConfigRepository(openSSHConfig);
         }
 
-        final String knownHostsFile = System.getProperty("user.home") + File.separator + ".ssh" + File.separator + "known_hosts";
+        final String knownHostsFile = System.getProperty("user.home") + File.separator + ".ssh" + File.separator
+                + "known_hosts";
         if (new File(knownHostsFile).exists()) {
             jSch.setKnownHosts(knownHostsFile);
         }
@@ -435,7 +425,12 @@ public final class JschDockerHttpClient implements DockerHttpClient {
 
         newSession.setUserInfo(jschDockerConfig.getUserInfo());
 
-        newSession.connect(connectTimeout);
+        // when no value is set, Jsch might take ConnectTimeout from ssh/config, otherwise this is being overwritten here
+        if (connectTimeout > 0) {
+            newSession.connect(connectTimeout);
+        } else {
+            newSession.connect();
+        }
 
         return newSession;
     }

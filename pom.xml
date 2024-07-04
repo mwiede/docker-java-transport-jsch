@@ -352,6 +352,13 @@
                     <version>${dockerjava.version}</version>
                     <scope>test</scope>
                 </dependency>
+                <dependency>
+                    <groupId>com.github.docker-java</groupId>
+                    <artifactId>docker-java</artifactId>
+                    <version>${dockerjava.version}</version>
+                    <classifier>tests</classifier>
+                    <scope>test</scope>
+                </dependency>
             </dependencies>
             
         </profile>
