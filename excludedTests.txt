@@ -1,2 +1,4 @@
 com.github.dockerjava.cmd.CreateContainerCmdIT#createContainerWithMemorySwappiness
 com.github.dockerjava.cmd.swarm.JoinSwarmCmdExecIT#joinSwarmAsManager
+com.github.dockerjava.cmd.InspectContainerCmdIT#inspectContainerWithSize
+com.github.dockerjava.cmd.LoadImageCmdIT
