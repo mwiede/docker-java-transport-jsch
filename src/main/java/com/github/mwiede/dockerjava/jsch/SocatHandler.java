@@ -22,17 +22,17 @@ public class SocatHandler {
     private SocatHandler() {
     }
 
-    public static Container startSocat(Session session, String socatFlags, String dockerSocketPath) throws JSchException, IOException {
+    public static Container startSocat(Session session, String socatFlags, String dockerSocketPath, String additionalFileToSource) throws JSchException, IOException {
 
         String dockerSocket = StringUtils.isEmpty(dockerSocketPath) ? JschDockerConfig.VAR_RUN_DOCKER_SOCK : dockerSocketPath;
 
-        final String command = " docker run -d " +
+        String command = " docker run -d " +
                 " -p 127.0.0.1:0:" + INTERNAL_SOCAT_PORT +
                 " -v " + dockerSocket + ":/var/run/docker.sock" +
                 "  alpine/socat " + socatFlags +
                 "  tcp-listen:" + INTERNAL_SOCAT_PORT + ",fork,reuseaddr unix-connect:/var/run/docker.sock";
 
-        final String containerId = runCommand(session, command);
+        final String containerId = runCommand(session, command, additionalFileToSource);
 
         try {
             final Container container = new Container();
@@ -49,7 +49,7 @@ public class SocatHandler {
             */
 
             String portCommand = String.format("docker port %s", containerId);
-            final String portResult = runCommand(session, portCommand).trim();
+            final String portResult = runCommand(session, portCommand, additionalFileToSource).trim();
             final String publishedPort = portResult.substring(portResult.lastIndexOf(':') + 1);
 
             final Field ports = container.getClass().getField("ports");
@@ -66,9 +66,15 @@ public class SocatHandler {
 
     }
 
-    private static String runCommand(Session session, String command) throws JSchException, IOException {
+    private static String runCommand(Session session, String command, String additionalFileToSource) throws JSchException, IOException {
 
         ChannelExec channel = (ChannelExec) session.openChannel("exec");
+
+        if (StringUtils.isNotEmpty(additionalFileToSource)) {
+            // e.g. for Windows named pipe support
+            command = " source " + additionalFileToSource + " && " + command;
+        }
+
         try {
             channel.setCommand(command);
             logger.debug("running command: {}", command);
@@ -121,8 +127,8 @@ public class SocatHandler {
         }
     }
 
-    public static void stopSocat(Session session, String containerId) throws JSchException, IOException {
+    public static void stopSocat(Session session, String containerId, String additionalFileToSource) throws JSchException, IOException {
         final String command = " docker stop " + containerId;
-        runCommand(session, command);
+        runCommand(session, command, additionalFileToSource);
     }
 }

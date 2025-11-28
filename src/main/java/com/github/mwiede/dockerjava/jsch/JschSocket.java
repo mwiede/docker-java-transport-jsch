@@ -3,6 +3,7 @@ package com.github.mwiede.dockerjava.jsch;
 import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.ContainerPort;
 import com.jcraft.jsch.*;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +60,7 @@ class JschSocket extends Socket {
                 logger.debug("Using channel direct-tcpip with 127.0.0.1:{}", port);
             } else if (config.isUseSocat() || unixSocketOnWindows()) {
                 // forward docker socket via socat
-                socatContainer = SocatHandler.startSocat(session, config.getSocatFlags(), config.getSocketPath());
+                socatContainer = SocatHandler.startSocat(session, config.getSocatFlags(), config.getSocketPath(), config.getAdditionalFileToSource());
                 final ContainerPort containerPort = socatContainer.getPorts()[0];
                 Objects.requireNonNull(containerPort);
                 channel = session.getStreamForwarder(containerPort.getIp(), containerPort.getPublicPort());
@@ -72,7 +73,11 @@ class JschSocket extends Socket {
             } else {
                 // only 18.09 and up
                 channel = session.openChannel("exec");
-                ((ChannelExec) channel).setCommand("docker system dial-stdio");
+                String command ="docker system dial-stdio";
+                if (StringUtils.isNotEmpty(config.getAdditionalFileToSource())) {
+                    command = " source " + config.getAdditionalFileToSource() + " && " + command;
+                }
+                ((ChannelExec) channel).setCommand(command);
                 logger.debug("Using dialer command");
             }
 
@@ -90,7 +95,7 @@ class JschSocket extends Socket {
     public synchronized void close() throws IOException {
         if (socatContainer != null) {
             try {
-                SocatHandler.stopSocat(session, socatContainer.getId());
+                SocatHandler.stopSocat(session, socatContainer.getId(),config.getAdditionalFileToSource());
             } catch (JSchException e) {
                 throw new IOException(e);
             }

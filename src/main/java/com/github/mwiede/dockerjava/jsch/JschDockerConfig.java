@@ -4,6 +4,7 @@ import com.jcraft.jsch.IdentityRepository;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.UserInfo;
 import okhttp3.Interceptor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.util.Hashtable;
@@ -24,6 +25,7 @@ class JschDockerConfig {
     private String socatFlags;
     private UserInfo userInfo;
     private IdentityRepository identityRepository;
+    private String additionalFileToSource;
 
     public Integer getTcpPort() {
         return tcpPort;
@@ -119,5 +121,16 @@ class JschDockerConfig {
 
     public IdentityRepository getIdentityRepository() {
         return identityRepository;
+    }
+
+    public String getAdditionalFileToSource() {
+        if(StringUtils.isNotEmpty(additionalFileToSource)){
+            return additionalFileToSource;
+        }
+        return System.getenv("JSCH_DOCKER_ADDITIONAL_FILE_TO_SOURCE");
+    }
+
+    public void setAdditionalFileToSource(String additionalFileToSource) {
+        this.additionalFileToSource = additionalFileToSource;
     }
 }

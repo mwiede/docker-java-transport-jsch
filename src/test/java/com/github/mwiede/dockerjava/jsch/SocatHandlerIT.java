@@ -74,14 +74,14 @@ class SocatHandlerIT {
     @AfterEach
     void stopSocat() throws IOException, JSchException {
         if (container != null) {
-            SocatHandler.stopSocat(session, container.getId());
+            SocatHandler.stopSocat(session, container.getId(), System.getenv("JSCH_DOCKER_ADDITIONAL_FILE_TO_SOURCE"));
         }
     }
 
     @org.junit.jupiter.api.Test
     @Timeout(value = 20)
     void startSocatAndPing() throws IOException, JSchException {
-        container = SocatHandler.startSocat(session, "", "");
+        container = SocatHandler.startSocat(session, "", "", System.getenv("JSCH_DOCKER_ADDITIONAL_FILE_TO_SOURCE"));
         assertNotNull(container);
         assertEquals("200", ping(container));
     }
