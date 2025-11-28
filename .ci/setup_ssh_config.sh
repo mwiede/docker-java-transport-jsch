@@ -8,6 +8,7 @@ ssh-keygen -q -t rsa -N "" -f jsch
 cat jsch.pub >> authorized_keys
 
 cat <<EOT >> config
+
 Host junit-host
 	HostName localhost
 	IdentityFile ~/.ssh/jsch
