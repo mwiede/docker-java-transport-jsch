@@ -15,7 +15,6 @@ import com.github.dockerjava.junit.category.Integration;
 import com.github.dockerjava.junit.category.SwarmModeIntegration;
 import com.github.mwiede.dockerjava.jsch.JschDockerHttpClient;
 import com.jcraft.jsch.JSchException;
-import org.awaitility.Awaitility;
 import org.junit.After;
 import org.junit.Assume;
 import org.junit.Before;
@@ -24,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -32,13 +32,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static com.github.dockerjava.api.model.HostConfig.newHostConfig;
 import static com.github.dockerjava.core.RemoteApiVersion.VERSION_1_24;
 import static com.github.dockerjava.junit.DockerMatchers.isGreaterOrEqual;
+import static org.awaitility.Awaitility.await;
 
 @Category({SwarmModeIntegration.class, Integration.class})
 public abstract class SwarmCmdIT extends CmdIT {
     private static final Logger LOG = LoggerFactory.getLogger(SwarmCmdIT.class);
     private static final String DOCKER_IN_DOCKER_IMAGE_REPOSITORY = "docker";
 
-    private static final String DOCKER_IN_DOCKER_IMAGE_TAG = "24.0.2-dind-rootless";
+    private static final String DOCKER_IN_DOCKER_IMAGE_TAG = "26.1.3-dind";
 
     private static final String DOCKER_IN_DOCKER_CONTAINER_PREFIX = "docker";
 
@@ -107,17 +108,15 @@ public abstract class SwarmCmdIT extends CmdIT {
         ExposedPort exposedPort = ExposedPort.tcp(2375);
         CreateContainerResponse response = hostDockerClient
                 .createContainerCmd(DOCKER_IN_DOCKER_IMAGE_REPOSITORY + ":" + DOCKER_IN_DOCKER_IMAGE_TAG)
+            .withEntrypoint("dockerd")
+            .withCmd(Arrays.asList("--host=tcp://0.0.0.0:2375", "--host=unix:///var/run/docker.sock", "--tls=false"))
                 .withHostConfig(newHostConfig()
                         .withNetworkMode(NETWORK_NAME)
                         .withPortBindings(new PortBinding(
                                 Ports.Binding.bindIp("127.0.0.1"),
                                 exposedPort))
-                        .withPrivileged(true)
-                        )
+                .withPrivileged(true))
                 .withAliases(DOCKER_IN_DOCKER_CONTAINER_PREFIX + numberOfDockersInDocker.incrementAndGet())
-                .withEnv("DOCKER_TLS_CERTDIR", // a trick to start without TLS (certs do not exist, but startup is slowed down)
-                "DOCKERD_ROOTLESS_ROOTLESSKIT_FLAGS=-p 0.0.0.0:2377:2377/tcp") // needed in rootless dind
-            .withEntrypoint("dockerd-entrypoint.sh","--tls=false")
                 .exec();
 
         String containerId = response.getId();
@@ -131,11 +130,7 @@ public abstract class SwarmCmdIT extends CmdIT {
 
         DockerClient dockerClient = initializeDockerClient(binding); 
 
-        //logDindContainerOutput(hostDockerClient, containerId);
-
-        Awaitility.given().ignoreExceptions().await()
-        .pollInterval(1, TimeUnit.SECONDS)
-        .atMost(30, TimeUnit.SECONDS).untilAsserted(() -> {
+        await().pollDelay(Duration.ofSeconds(5)).atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
             dockerClient.pingCmd().exec();
         });
 
