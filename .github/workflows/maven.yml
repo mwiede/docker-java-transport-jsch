@@ -18,7 +18,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { name: "ssh-default" , dockerVersion: "5:23.0.6-1~ubuntu.22.04~jammy"}
+          - { name: "ssh-default" , dockerVersion: "5:28.5.2-1~ubuntu.24.04~noble"}
     steps:
       - uses: actions/checkout@v4
         with:
