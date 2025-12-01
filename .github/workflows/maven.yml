@@ -20,7 +20,7 @@ jobs:
         include:
           - { name: "ssh-default" , dockerVersion: "5:28.5.2-1~ubuntu.24.04~noble"}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: recursive
       - name: Set up JDK
