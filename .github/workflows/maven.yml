@@ -45,7 +45,7 @@ jobs:
         if: always()
         continue-on-error: true
         run: mvn -B surefire-report:failsafe-report-only
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: always()
         with:
           name: ${{ matrix.name }}-testresults
