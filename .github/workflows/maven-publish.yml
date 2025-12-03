@@ -1,0 +1,43 @@
+# This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
+# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#apache-maven-with-a-settings-path
+
+name: Maven Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '25'
+      - name: Set up Maven settings
+        uses: s4u/maven-settings-action@894661b3ddae382f1ae8edbeab60987e08cf0788 # v4.0.0
+        with:
+          githubServer: false
+          servers: |
+            [{
+              "id": "${{ secrets.MAVEN_REPO_SERVER_ID}}",
+              "username": "${{ secrets.MAVEN_REPO_SERVER_USERNAME}}",
+              "password": "${{ secrets.MAVEN_REPO_SERVER_PASSWORD}}"
+            }]
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_KEY }}
+      - name: Build with Maven
+        run: |
+            git config user.name github-actions
+            git config user.email github-actions@github.com            
+            mvn release:prepare -Darguments=-DskipITs -DpushChanges=false -Dgpg.passphrase= 
+            mvn release:perform -DlocalCheckout=true -Darguments=-DskipITs -Dgpg.passphrase=
+            git push --tags
