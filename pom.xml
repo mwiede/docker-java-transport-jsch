@@ -5,7 +5,7 @@
 
     <groupId>com.github.mwiede.dockerjava</groupId>
     <artifactId>docker-java-transport-jsch</artifactId>
-    <version>1.4-SNAPSHOT</version>
+    <version>1.4</version>
 
     <name>docker-java-transport-jsch</name>
     <description>A library to use docker-java api via ssh protocol</description>
@@ -413,6 +413,6 @@
         <connection>scm:git:git@github.com:mwiede/docker-java-transport-jsch.git</connection>
         <developerConnection>scm:git:git@github.com:mwiede/docker-java-transport-jsch.git</developerConnection>
         <url>https://github.com/mwiede/docker-java-transport-jsch</url>
-        <tag>HEAD</tag>
+        <tag>docker-java-transport-jsch-1.4</tag>
     </scm>
 </project>
