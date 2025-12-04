@@ -38,7 +38,14 @@ try(final JschDockerHttpClient httpClient=new JschDockerHttpClient.Builder()
         }
 ```
 
-### connection variants
+### additional configuration 
+
+| env variable                          | description                                                                                                                                                                                                                                                                                                                                   | example  |
+|---------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
+| DOCKER_HOST                           | Daemon socket to connect to. For this project, it makes only sense to use a ssh connection of scheme `ssh://[username@]<IP or host>[:port]`                                                                                                                                                                                                   |          |
+| JSCH_DOCKER_ADDITIONAL_FILE_TO_SOURCE | if for any reason additional config is needed to be able to connect to the daemon, a file can be referenced, which is sourced on the remote before connecting the daemon. <br/>Be aware, that the ssh connection is doing a direct `RemoteCommand` on the remote without a shell. This might be used to add the `docker` executable to `PATH` | ~/.zshrc |
+
+### daemon connection variants in the ssh session
 
 By setting flags in the builder, one can control how the connection is made.
 
